@@ -13,6 +13,7 @@ const client = new Client({
 });
 
 let qrcodeData = null;
+let orderState = {};
 
 client.on("ready", () => {
   console.log("Client is ready!");
@@ -35,24 +36,49 @@ client.on("message", async (message) => {
 });
 
 const handleIncomingMessage = async (message) => {
-  const text = message.body.toLowerCase();
+  const phoneNumber = message.from;
+  const text = message.body.trim();
   let response = "";
 
-  if (text.includes("menu")) {
-    response =
-      "Aqui está nosso menu:\n1. Margherita - R$25\n2. Pepperoni - R$30\n3. Portuguesa - R$28\n4. Calabresa - R$27\n5. Quatro Queijos - R$32";
-  } else if (text.includes("pedido") || text.includes("order")) {
-    response =
-      'Para fazer um pedido, por favor envie: "Quero pedir [nome da pizza]".';
-  } else if (text.includes("quero pedir")) {
-    const order = text.replace("quero pedir", "").trim();
-    response = `Seu pedido de ${order} foi recebido! Em breve enviaremos uma confirmação.`;
-  } else {
-    response =
-      'Bem-vindo ao bot da Pizzaria! Você pode perguntar pelo "menu" ou fazer um "pedido".';
+  if (!orderState[phoneNumber]) {
+    if (text === "1") {
+      response =
+        "Aqui está nosso menu:\n1. Margherita - R$25\n2. Pepperoni - R$30\n3. Portuguesa - R$28\n4. Calabresa - R$27\n5. Quatro Queijos - R$32\n\nDigite o número da pizza que você deseja pedir.";
+      orderState[phoneNumber] = { step: "menu" };
+    } else {
+      response =
+        'Bem-vindo ao bot da Pizzaria!\nDigite "1" para ver o menu e fazer um pedido.';
+    }
+  } else if (orderState[phoneNumber].step === "menu") {
+    const pizzaMenu = {
+      1: "Margherita",
+      2: "Pepperoni",
+      3: "Portuguesa",
+      4: "Calabresa",
+      5: "Quatro Queijos",
+    };
+
+    if (pizzaMenu[text]) {
+      orderState[phoneNumber].pizza = pizzaMenu[text];
+      response = `Você escolheu ${pizzaMenu[text]}. Para confirmar seu pedido, digite "2". Para cancelar, digite "3".`;
+      orderState[phoneNumber].step = "confirm";
+    } else {
+      response =
+        "Opção inválida. Por favor, escolha uma pizza digitando o número correspondente:\n1. Margherita - R$25\n2. Pepperoni - R$30\n3. Portuguesa - R$28\n4. Calabresa - R$27\n5. Quatro Queijos - R$32";
+    }
+  } else if (orderState[phoneNumber].step === "confirm") {
+    if (text === "2") {
+      response = `Seu pedido de ${orderState[phoneNumber].pizza} foi confirmado! Em breve enviaremos uma confirmação.`;
+      delete orderState[phoneNumber];
+    } else if (text === "3") {
+      response = "Seu pedido foi cancelado.";
+      delete orderState[phoneNumber];
+    } else {
+      response = `Você escolheu ${orderState[phoneNumber].pizza}. Para confirmar seu pedido, digite "2". Para cancelar, digite "3".`;
+    }
   }
 
-  await client.sendMessage(message.from, response);
+  await client.sendMessage(phoneNumber, response);
 };
 
 const getQRCode = () => qrcodeData;
