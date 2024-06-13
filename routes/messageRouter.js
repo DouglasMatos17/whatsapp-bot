@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/qr", async (req, res) => {
-  const qrCode = await generateQRCode();
+  const qrCode = await getQRCode();
   res.send(qrCode);
 });
 module.exports = router;
