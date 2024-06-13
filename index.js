@@ -8,11 +8,10 @@ client.initialize();
 const app = express();
 
 app.use(cors());
+
 app.use(express.json());
 app.use(messageRouter);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("server is ready");
 });
-
-module.exports = { app };
