@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
   res.send("Olá mundo!!");
 });
 
-app.get("/qr", async (req, res) => {
+router.get("/qr", async (req, res) => {
   const qrCode = await generateQRCode();
   res.send(qrCode);
 });
