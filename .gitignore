@@ -1,2 +1,5 @@
 .vercel
 node_modules/
+.wwebjs_auth/session/Crashpad/
+.wwebjs_auth/session/Default/
+.wwebjs_auth/session/DevToolsActivePort
