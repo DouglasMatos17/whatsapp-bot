@@ -1,7 +1,7 @@
-const express = require("express");
-const { getQRCode, client } = require("../services/whatsappClient");
+import { Router } from "express";
+import { getQRCode }  from "../services/whatsappClient.js";
 
-const router = new express.Router();
+const router = new Router();
 
 router.get("/", (req, res) => {
   res.send("Olá mundo!!");
@@ -11,4 +11,4 @@ router.get("/qr", async (req, res) => {
   const qrCode = await getQRCode();
   res.send(qrCode);
 });
-module.exports = router;
+export default router;

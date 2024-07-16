@@ -1,4 +1,5 @@
-const { Client, LocalAuth } = require("whatsapp-web.js");
+import pkg from 'whatsapp-web.js';
+const { Client, LocalAuth } = pkg;
 
 const client = new Client({
   puppeteer: {
@@ -83,4 +84,4 @@ const handleIncomingMessage = async (message) => {
 
 const getQRCode = () => qrcodeData;
 
-module.exports = { client, getQRCode };
+export { client, getQRCode };

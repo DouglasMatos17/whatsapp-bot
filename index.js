@@ -1,7 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const messageRouter = require("./routes/messageRouter");
-const { client } = require("./services/whatsappClient");
+import express, { json } from "express";
+import cors from "cors";
+import messageRouter from "./routes/messageRouter.js";
+import { client }  from "./services/whatsappClient.js";
 
 client.initialize();
 
@@ -10,7 +10,7 @@ const port = 3050
 
 app.use(cors());
 
-app.use(express.json());
+app.use(json());
 app.use(messageRouter);
 
 app.listen(process.env.PORT || port, () => {
